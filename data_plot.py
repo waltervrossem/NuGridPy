@@ -3955,7 +3955,9 @@ class DataPlot(object):
         else:
             xlab='${\\rm Mass}\,/\,M_\odot$'
 
-        if ifig is not None:
+        if type(ifig).__name__ == 'Figure':
+            pl.sca(ifig.axes[0])
+        elif ifig is not None:
             pl.figure(ifig)
         if label is not None:
             if colour is not None:
@@ -4040,7 +4042,9 @@ class DataPlot(object):
         else:
             xlab='${\\rm Mass}\,/\,M_\odot$'
 
-        if ifig is not None:
+        if type(ifig).__name__ == 'Figure':
+            pl.sca(ifig.axes[0])
+        elif ifig is not None:
             pl.figure(ifig)
 
         from . import utils as u
@@ -4113,7 +4117,9 @@ class DataPlot(object):
         else:
             xlab='${\\rm Mass}\,/\,M_\odot$'
 
-        if ifig is not None:
+        if type(ifig).__name__ == 'Figure':
+            pl.sca(ifig.axes[0])
+        elif ifig is not None:
             pl.figure(ifig)
         if label is not None:
             if colour is not None:

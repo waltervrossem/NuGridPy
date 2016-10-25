@@ -885,12 +885,11 @@ class history_data(DataPlot):
                 _cleanstarlog(sldir+'/'+slname)
             else:
                 print('Using old '+self.slname+'sa file ...')
-
-        cmd=os.popen('wc '+sldir+'/'+slaname)
-        cmd_out=cmd.readline()
-        cnum_cycles=cmd_out.split()[0]
-        num_cycles=int(cnum_cycles) - 6
-
+        
+        with open(os.path.join(sldir, slaname), 'rb') as handle:
+            starlog = handle.read()
+            num_cycles = starlog.count('\n') - 6
+        
         filename=sldir+'/'+slaname
 
         header_attr,cols,data = _read_mesafile(filename,data_rows=num_cycles)
@@ -987,7 +986,9 @@ class history_data(DataPlot):
 #        except:
 #            pass
 
-        if ifig is not None:
+        if type(ifig).__name__ == 'Figure':
+            pl.sca(ifig.axes[0])
+        elif ifig is not None:
             pl.figure(ifig)
 
         if s2ms:
@@ -1132,7 +1133,9 @@ class history_data(DataPlot):
 
         x = self.get('center_he4')[skip:]
         y = self.get('log_Teff')[skip:]
-        if ifig is not None:
+        if type(ifig).__name__ == 'Figure':
+            pl.sca(ifig.axes[0])
+        elif ifig is not None:
             pl.figure(ifig)
         if label is not None:
             if colour is not None:
@@ -1198,7 +1201,9 @@ class history_data(DataPlot):
 #        except:
 #            pass
 
-        if ifig is not None:
+        if type(ifig).__name__ == 'Figure':
+            pl.sca(ifig.axes[0])
+        elif ifig is not None:
             pl.figure(ifig)
 
         if label is not None:
@@ -1266,9 +1271,6 @@ class history_data(DataPlot):
         except:
             pass
 
-        if ifig is not None:
-            pl.figure(ifig)
-
         if s2ms:
             h1=self.get('center_h1')
             idx=np.where(h1[0]-h1>=3.e-3)[0][0]
@@ -1287,7 +1289,9 @@ class history_data(DataPlot):
         x = lage[skip:]
         y = self.get('log_abs_mdot')[skip:]
 
-        if ifig is not None:
+        if type(ifig).__name__ == 'Figure':
+            pl.sca(ifig.axes[0])
+        elif ifig is not None:
             pl.figure(ifig)
         if label is not None:
             if colour is not None:
@@ -1356,9 +1360,6 @@ class history_data(DataPlot):
         except:
             pass
 
-        if ifig is not None:
-            pl.figure(ifig)
-
         if s2ms:
             h1=self.get('center_h1')
             idx=np.where(h1[0]-h1>=3.e-3)[0][0]
@@ -1388,7 +1389,9 @@ class history_data(DataPlot):
             y1 = np.ma.masked_where(mt1 != 1, y1)
             y2 = np.ma.masked_where(mt2 != 1, y2)
 
-        if ifig is not None:
+        if type(ifig).__name__ == 'Figure':
+            pl.sca(ifig.axes[0])
+        elif ifig is not None:
             pl.figure(ifig)
         if label is not None:
             if colour is not None:
@@ -2340,7 +2343,13 @@ class history_data(DataPlot):
 
         ########################################################################
         #----------------------------------plot--------------------------------#
-        fig = pyl.figure(ifig)
+        if type(ifig).__name__ == 'Figure':
+            pl.sca(ifig.axes[0])
+            fig = ifig
+            ax = fig.axes[0]
+        elif ifig is not None:
+            fig = pyl.figure(ifig)
+            ax=pl.axes()
 #        fsize=20
         if landscape_plot == True:
             fig.set_size_inches(9,4)
@@ -2358,7 +2367,7 @@ class history_data(DataPlot):
         #ax=pl.axes([0.1,0.1,0.9,0.8])
 
         #fig=pl.figure()
-        ax=pl.axes()
+        
 
         if ixaxis == 'log_time_left':
         # log of time left until core collapse
